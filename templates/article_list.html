@@ -1,0 +1,31 @@
+{% extends "base.html" %} {% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Article{% endblock title %}</title>
+  </head>
+  <body>
+    {% for article in article_list %}
+    <div class="card">
+      <div class="card-header">
+        <span class="fw-bold">
+          <a href="{{article.get_absolute_url}}">{{ article.title }}</a>
+        </span>
+        &middot;
+        <span class="text-muted"
+          >by {{ article.author }} | {{ article.date }}</span
+        >
+      </div>
+      <div class="body">{{ article.body }}</div>
+      <div class="card-footer text-center text-muted">
+        <a href="{% url 'article_edit' article.pk %}">Edit</a>
+        <a href="{% url 'article_delete' article.pk %}">Delete</a>
+      </div>
+    </div>
+    <br />
+    {% endfor %} {% endblock content %}
+  </body>
+</html>
