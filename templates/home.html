@@ -1,3 +1,4 @@
+{% extends "base.html" %} {% block content %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -63,7 +64,7 @@
       <h1>User Profile</h1>
     </header>
     <main>
-      {% block content %} {% if user.is_authenticated %}
+      {% if user.is_authenticated %}
       <img src="{{ user.profile_image.url }}" alt="User Profile Image" />
 
       <p>Hi {{ user.username }}! You are {{ user.age }} years old. <br /></p>

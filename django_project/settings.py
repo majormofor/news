@@ -37,8 +37,15 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "accounts"
+    "accounts",
+    "pages",
+    #3rd party
+    "crispy_forms",
+    "crispy_bootstrap5",
+    "articles"
 ]
+
+TIME_ZONE = "Europe/London"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -132,8 +139,26 @@ LOGOUT_REDIRECT_URL = "home"
 # Media Settings
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Define the path to your media directory
-
+# Media
 try:
     from .local_settings import *
 except ImportError:
     pass
+
+
+# Bootstrap Crispy to alloq for design of django default signup page
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+
+
+# Password reset 
+from django.core.mail import send_mail
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = 'smtp.gmail.com'  # Use Gmail's SMTP server
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True  # Use TLS (True for Gmail)
+EMAIL_HOST_USER = 'testqwerty543210@gmail.com'  # Your Gmail email address
+EMAIL_HOST_PASSWORD = 'dtjzvqmvfvofjhhr'  # Your Gmail email paassword

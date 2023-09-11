@@ -11,9 +11,11 @@
     {% block content %}
     <h2>Sign Up</h2>
     <form method="post" enctype="multipart/form-data">
-      {% csrf_token %} {{ form.as_p }}
+      {% csrf_token %} {% load crispy_forms_tags %}
+      <!-- {{ form.as_p }} replaced by crispy -->
+      {{ form|crispy }}
 
-      <button type="submit">Sign Up</button>
+      <button type="button" class="btn btn-primary">Submit</button>
     </form>
     {% endblock %}
   </body>
