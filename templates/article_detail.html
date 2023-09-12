@@ -14,6 +14,7 @@
       <p>{{object.body}}</p>
     </div>
     <div>
+      {% if article.author.pk == request.user.pk %}
       <p>
         <a href="{% url 'article_edit' article.pk %}" class="btn btn-primary"
           >Edit</a
@@ -22,7 +23,7 @@
           >Delete</a
         >
       </p>
-
+      {% endif %}
       <p>Back to <a href="{% url 'article_list' %}">All Articles</a></p>
     </div>
     {% endblock content %}
