@@ -1,8 +1,18 @@
+from typing import Any
+from django.http import HttpResponse
 from django.views.generic import ListView
 
 from django.views.generic import DetailView
+# for comment
+from django.views import View
+# to add comment fields
+from .forms import CommentForm
+# To post comment
+from django.views.generic import FormView
+from django.views.generic.detail import SingleObjectMixin
+
 from django.views.generic.edit import UpdateView, DeleteView, CreateView
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 
 # for restricting access using mixins
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -19,6 +29,7 @@ from .models import Article
 # Create your views here.
 
 
+
 class ArticleListView(LoginRequiredMixin, ListView):
     model = Article
     template_name = "article_list.html"
@@ -26,6 +37,13 @@ class ArticleListView(LoginRequiredMixin, ListView):
 class ArticleDetailView(LoginRequiredMixin, DetailView):
     model = Article
     template_name = "article_detail.html"
+
+    # to show comment fields
+    def get_context_data(self, **kwargs: Any):
+        context = super().get_context_data(**kwargs)
+        context["form"] = CommentForm()
+        return context
+
 
 class ArticleUpdateView(LoginRequiredMixin,UserPassesTestMixin, UpdateView):
     model = Article
@@ -68,3 +86,43 @@ class ArticleCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
+
+
+
+class CommentGet(DetailView):
+    model = Article
+    template_name = "article_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form"] = CommentForm()
+        return context
+    
+class CommentPost(SingleObjectMixin, FormView):
+    model = Article
+    form_class = CommentForm
+    template_name = "article_detail.html"
+
+    def post(self, request, *args, **kwargs ):
+        self.object = self.get_object()
+        return super().post(request, *args, **kwargs)
+    def form_valid(self, form):
+        comment = form.save(commit = False)
+        comment.article = self.object
+        comment.author = self.request.user
+        comment.save()
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        article = self.object
+        return reverse("article_detail", kwargs={"pk": article.pk})
+
+class ArticleDetailView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        view = CommentGet.as_view()
+        return view(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        view = CommentPost.as_view()
+        return view(request, *args, **kwargs)
+    
